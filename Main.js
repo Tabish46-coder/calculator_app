@@ -1,32 +1,53 @@
 import React, {useState} from "react";
-import { View,SafeAreaView,TextInput,StyleSheet,TouchableOpacity,Text,Image} from "react-native";
-
+import { View,SafeAreaView,TextInput,StyleSheet,TouchableOpacity,Text,Image,Modal} from "react-native";
+import SimpleMode from "./ShiftMode";
+import ShiftMode from "./ShiftMode";
 function Main({navigation}){
 const [input,setinput]=useState('');
 const [shift,setshift]=useState(false);
 
-const ModeHandling=()=>{
-  if(shift===false){  
-  navigation.navigate('SimpleMode')
-  }
-  else{
-    navigation.navigate('ShiftMode')
-  }
+const ModeHandling = () => {
+  // Instead of navigating, show modal
+  setModalVisible(true);
 }
 
-const ShiftHandling=()=>{
-  if(shift===false){
- setshift(true)
-  }
-  else{
-   setshift(false)
-  }
-
+const ShiftHandling = () => {
+  setshift(!shift);
 }
+
+const closeModal = () => {
+  setModalVisible(false);
+}
+
+
 
 
 return(
  <SafeAreaView style={ss.mainView}>
+
+
+  {/* Modal component */}
+  <Modal
+        animationType="fade"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={closeModal}
+       >
+        <TouchableWithoutFeedback onPress={closeModal}>
+          <View style={ss.modalOverlay}>
+            <TouchableWithoutFeedback>
+              <View style={ss.modalContent}>
+                {shift ? (
+                  <ShiftMode closeModal={closeModal} />
+                 ) : (
+                  <SimpleMode closeModal={closeModal} />
+                )}
+              </View>
+            </TouchableWithoutFeedback>
+          </View>
+        </TouchableWithoutFeedback>
+      </Modal>
+
    <View style={{marginTop:22}}>
       <TextInput style={ss.textInput} multiline={true} onChangeText={setinput}>
       </TextInput>
